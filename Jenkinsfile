@@ -12,7 +12,6 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the source code from your repository
-                // Modify the URL and branch if your repository or branch name changes
                 git url: 'https://github.com/shashank1553/java-onlinebookstore.git', branch: 'main'
             }
         }
@@ -20,7 +19,6 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the Maven project
-                // Adjust Maven command if your build process requires additional options
                 sh "${MAVEN_HOME}/bin/mvn clean install"
             }
         }
@@ -28,7 +26,6 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 // Run SonarQube analysis
-                // Ensure the server ID matches your SonarQube configuration
                 withSonarQubeEnv(SONARQUBE_SERVER) {
                     sh "${MAVEN_HOME}/bin/mvn sonar:sonar"
                 }
@@ -39,12 +36,11 @@ pipeline {
             steps {
                 script {
                     // Upload artifacts to JFrog Artifactory
-                    // Modify the 'serverId' and 'spec' according to your Artifactory configuration and repository structure
                     rtUpload (
                         serverId: ARTIFACTORY_SERVER,
                         spec: '''{
                             "files": [{
-                                "pattern": "target/*.war", // Path to the artifact to upload. Modify if different.
+                                "pattern": "target/onlinebookstore.war", // Path to the artifact to upload. Modify if different.
                                 "target": "maven-releases/myapp/" // Target repository path in Artifactory (Maven release repository). Modify as needed.
                             }]
                         }'''
@@ -57,10 +53,8 @@ pipeline {
             steps {
                 script {
                     // Deploy the WAR file to Apache Tomcat server
-                    // Adjust the Tomcat URL and credentials if your server details or credentials change
                     sh """
-                        curl --upload-file target/*.war \\
-                        "http://admin:123456@54.226.160.53:8080/manager/text/deploy?path=/myapp&update=true"
+                        curl -u <username>:<password> --upload-file target/onlinebookstore.war "http://35.171.26.114:8081/artifactory/maven-releases/myapp/"
                     """
                 }
             }
