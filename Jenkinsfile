@@ -6,6 +6,7 @@ pipeline {
         SONARQUBE_SERVER = 'Sonar' // Define the SonarQube server ID.
         SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
         ARTIFACTORY_SERVER = 'Artifactory' // Define Artifactory server ID.
+        SONAR_TOKEN = 'sqa_bcb97e97554c1eeff5b2a5cd9c0a23d2d59b749b' // SonarQube token
     }
 
     stages {
@@ -27,7 +28,7 @@ pipeline {
             steps {
                 // Run SonarQube analysis
                 withSonarQubeEnv(SONARQUBE_SERVER) {
-                    sh "${MAVEN_HOME}/bin/mvn sonar:sonar"
+                    sh "${MAVEN_HOME}/bin/mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
                 }
             }
         }
