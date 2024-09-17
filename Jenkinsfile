@@ -2,10 +2,10 @@ pipeline {
     agent { label 'dev' } // Specify the label of your Jenkins Slave. Modify 'dev' if you use a different label.
 
     environment {
-        MAVEN_HOME = tool name: 'Maven' // Configure Maven installation. Ensure 'Maven' matches the name in Jenkins tool configuration.
-        SONARQUBE_SERVER = 'Sonar' // Define the SonarQube server ID. Replace 'Sonar' with your SonarQube server ID if different.
-        SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Configure SonarQube Scanner installation. Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
-        ARTIFACTORY_SERVER = 'Artifactory' // Define Artifactory server ID. Replace 'Artifactory' with your Artifactory server ID if different.
+        MAVEN_HOME = tool name: 'Maven' // Ensure 'Maven' matches the name in Jenkins tool configuration.
+        SONARQUBE_SERVER = 'Sonar' // Define the SonarQube server ID.
+        SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Ensure 'SonarScanner' matches the name in Jenkins tool configuration.
+        ARTIFACTORY_SERVER = 'Artifactory' // Define Artifactory server ID.
     }
 
     stages {
@@ -40,8 +40,8 @@ pipeline {
                         serverId: ARTIFACTORY_SERVER,
                         spec: '''{
                             "files": [{
-                                "pattern": "target/onlinebookstore.war", // Path to the artifact to upload. Modify if different.
-                                "target": "maven-releases/myapp/" // Target repository path in Artifactory (Maven release repository). Modify as needed.
+                                "pattern": "target/onlinebookstore.war", // Path to the artifact to upload
+                                "target": "maven-releases/onlinebookstore/" // Target repository path in Artifactory
                             }]
                         }'''
                     )
@@ -54,7 +54,7 @@ pipeline {
                 script {
                     // Deploy the WAR file to Apache Tomcat server
                     sh """
-                        curl -u <username>:<password> --upload-file target/onlinebookstore.war "http://35.171.26.114:8081/artifactory/maven-releases/myapp/"
+                        curl -u admin:Admin12345 --upload-file target/onlinebookstore.war "http://35.171.26.114:8081/artifactory/maven-releases/onlinebookstore/"
                     """
                 }
             }
