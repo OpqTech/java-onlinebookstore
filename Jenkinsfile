@@ -2,17 +2,14 @@ pipeline{
 
 	parameters {
 		booleanParam defaultValue: true, name: 'sonar'
-		choice choices: ['env'], description: '''dev
-		qa
-		uat
-		pre-prod
-		prod''', name: ''
+		choice choices: ['dev', 'qa', 'uat', 'pre-prod', 'prod'], name: 'env'
 		string defaultValue: 'ls-l', name: 'command'
-		text defaultValue: '''dadad
-		adada
-		adad''', name: 'text'
-		}
-		
+		text defaultValue: '''dadad,
+		adada,
+		adad,''', name: 'text'
+	}
+
+
 	agent {label 'dev'}
 	stages {
 		stage('GIT checkout') {
