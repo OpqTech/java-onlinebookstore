@@ -5,6 +5,9 @@ pipeline {
       string defaultValue: 'mvn clean install', description: 'update the command based on req', name: 'command'
       booleanParam defaultValue: true, description: 'enable to run sonar scan', name: 'sonar'
     }
+    triggers{
+        parameterizedCron('TZ=Asia/kolkata\n * * * * * % soanr=true;command=mvn clean install;environment=dev')
+    }
     stages {
         stage ('checkout') {
             steps {
