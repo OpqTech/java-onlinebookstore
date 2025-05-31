@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label "${environment}" }
     parameters {
         choice choices: ['dev', 'qa', 'uat', 'prod'], description: 'Choose the env', name: 'environment'
         booleanParam defaultValue: true, description: 'Enable to run sonar scan', name: 'sonar'
