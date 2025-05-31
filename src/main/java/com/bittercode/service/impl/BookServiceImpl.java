@@ -12,7 +12,8 @@ import com.bittercode.constant.db.BooksDBConstants;
 import com.bittercode.model.Book;
 import com.bittercode.model.StoreException;
 import com.bittercode.service.BookService;
-import com.bittercode.util.DBUtil;
+import com.bittercode.util.ConnectionProvider;
+import com.bittercode.util.DefaultConnectionProvider;
 
 public class BookServiceImpl implements BookService {
 
@@ -37,10 +38,20 @@ public class BookServiceImpl implements BookService {
             + "  WHERE " + BooksDBConstants.COLUMN_BARCODE
             + "=?";
 
+    private final ConnectionProvider connectionProvider;
+
+    public BookServiceImpl() {
+        this(new DefaultConnectionProvider());
+    }
+
+    public BookServiceImpl(ConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
+
     @Override
     public Book getBookById(String bookId) throws StoreException {
         Book book = null;
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement(getBookByIdQuery);
             ps.setString(1, bookId);
@@ -64,7 +75,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getAllBooks() throws StoreException {
         List<Book> books = new ArrayList<Book>();
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
 
         try {
             PreparedStatement ps = con.prepareStatement(getAllBooksQuery);
@@ -89,7 +100,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String deleteBookById(String bookId) throws StoreException {
         String response = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement(deleteBookByIdQuery);
             ps.setString(1, bookId);
@@ -107,7 +118,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String addBook(Book book) throws StoreException {
         String responseCode = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement(addBookQuery);
             ps.setString(1, book.getBarcode());
@@ -129,7 +140,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String updateBookQtyById(String bookId, int quantity) throws StoreException {
         String responseCode = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement(updateBookQtyByIdQuery);
             ps.setInt(1, quantity);
@@ -146,7 +157,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getBooksByCommaSeperatedBookIds(String commaSeperatedBookIds) throws StoreException {
         List<Book> books = new ArrayList<Book>();
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
         try {
             String getBooksByCommaSeperatedBookIdsQuery = "SELECT * FROM " + BooksDBConstants.TABLE_BOOK
                     + " WHERE " +
@@ -173,7 +184,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String updateBook(Book book) throws StoreException {
         String responseCode = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement(updateBookByIdQuery);
             ps.setString(1, book.getName());

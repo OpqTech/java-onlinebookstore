@@ -13,7 +13,8 @@ import com.bittercode.model.StoreException;
 import com.bittercode.model.User;
 import com.bittercode.model.UserRole;
 import com.bittercode.service.UserService;
-import com.bittercode.util.DBUtil;
+import com.bittercode.util.ConnectionProvider;
+import com.bittercode.util.DefaultConnectionProvider;
 
 public class UserServiceImpl implements UserService {
 
@@ -24,9 +25,19 @@ public class UserServiceImpl implements UserService {
             + UsersDBConstants.COLUMN_USERNAME + "=? AND " + UsersDBConstants.COLUMN_PASSWORD + "=? AND "
             + UsersDBConstants.COLUMN_USERTYPE + "=?";
 
+    private final ConnectionProvider connectionProvider;
+
+    public UserServiceImpl() {
+        this(new DefaultConnectionProvider());
+    }
+
+    public UserServiceImpl(ConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
+
     @Override
     public User login(UserRole role, String email, String password, HttpSession session) throws StoreException {
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
         PreparedStatement ps;
         User user = null;
         try {
@@ -69,7 +80,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String register(UserRole role, User user) throws StoreException {
         String responseMessage = ResponseCode.FAILURE.name();
-        Connection con = DBUtil.getConnection();
+        Connection con = connectionProvider.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement(registerUserQuery);
             ps.setString(1, user.getEmailId());
