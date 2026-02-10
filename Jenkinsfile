@@ -15,7 +15,6 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/OpqTech/java-onlinebookstore.git']])
             }
         }
-
         stage('sonarscan') {
             when {
                 expression { params.sonar }
@@ -27,7 +26,6 @@ pipeline {
                 }
             }
         }
-
         stage('quality gate') {
             when {
                 expression { params.sonar }
@@ -38,7 +36,6 @@ pipeline {
                 }
             }
         }
-
         stage('build') {
             steps {
                 sh 'mvn clean install'
@@ -51,7 +48,6 @@ pipeline {
                 }
             }
         }
-
         stage('push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'jfrog', passwordVariable: 'password', usernameVariable: 'username')]) {
@@ -59,7 +55,6 @@ pipeline {
                 }
                 }
         }
-
         stage('deploy') {
             steps {
                 sh 'cp -r /target/*.war /opt/tomcat/apache-tomcat-9.0.68/webapps/'
