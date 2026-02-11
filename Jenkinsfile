@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'dev'}
+    agent {label 'linux'}
     stages {
         stage ('checkout') {
             steps {
